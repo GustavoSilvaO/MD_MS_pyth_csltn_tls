@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from service.teste import hello_world
 
 app = FastAPI(title="MindDesk - Agente Tools MVP")
 
@@ -15,5 +16,9 @@ class ToolPayload(BaseModel):
 
 @app.post("/api/v1/executar")
 async def executar_acao(payload: ToolPayload):
-    # Retorna o JSON exato que o Orquestrador espera ler
-    return {"answer": "sou um agente que faz quaries no banco"}
+
+    resultado = hello_world()
+
+    return {
+        "answer": resultado
+    }
