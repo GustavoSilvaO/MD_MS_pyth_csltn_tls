@@ -47,5 +47,22 @@ TOOLS_SCHEMA = [
                 "required": ["nome"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "salvar_atestado_db",
+            "description": "Salva um novo atestado médico no banco de dados DEPOIS que o usuário confirmar que os dados lidos estão corretos.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "data_emissao": {"type": "string", "description": "Data de emissão no formato YYYY-MM-DD"},
+                    "dias_afastamento": {"type": "integer", "description": "Quantidade de dias de repouso concedidos"},
+                    "motivo_cid": {"type": "string", "description": "O código CID encontrado ou null"},
+                    "url_arquivo": {"type": "string", "description": "A URL (link) do arquivo do atestado presente no histórico"}
+                },
+                "required": ["data_emissao", "dias_afastamento", "url_arquivo"]
+            }
+        }
     }
 ]

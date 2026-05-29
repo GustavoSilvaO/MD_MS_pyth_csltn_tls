@@ -105,3 +105,34 @@ async def consultar_atestados_db(nome: str, tenant_id: int, supa_url: str, supa_
     except Exception as e:
         logger.error(f"[DB ERROR] {e}")
         return "Erro técnico ao consultar atestados."
+    
+    
+async def salvar_atestado_db(dados: dict, tenant_id: int, user_id: str, supa_url: str, supa_key: str) -> str:
+    logger.info(f"[DB] Salvando atestado para o usuário: '{user_id}' (Tenant: {tenant_id})")
+    try:
+        endpoint = f"{supa_url}/rest/v1/atestados"
+        headers = {
+            "apikey": supa_key,
+            "Authorization": f"Bearer {supa_key}",
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+        }
+        
+        payload = {
+            "tenant_id": tenant_id,
+            "usuario_id": user_id,
+            "data_emissao": dados.get("data_emissao"),
+            "dias_afastamento": dados.get("dias_afastamento"),
+            "motivo_cid": dados.get("motivo_cid"),
+            "url_arquivo": dados.get("url_arquivo"),
+            "status": "aprovado" # Ou pendente, de acordo com a sua regra
+        }
+
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(endpoint, headers=headers, json=payload)
+            resp.raise_for_status()
+
+        return "Atestado salvo com sucesso no banco de dados!"
+    except Exception as e:
+        logger.error(f"[DB ERROR] Falha ao salvar atestado: {e}")
+        return f"Erro técnico ao tentar salvar o atestado no banco."
